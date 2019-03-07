@@ -22,6 +22,7 @@ from enum import Enum
 position_range = {
     'MX': (4096, 360.0),
     'SR': (4096, 360.0),
+    'XM430': (4096, 360.0),
     '*': (1024, 300.0)
 }
 
@@ -59,6 +60,8 @@ def dxl_to_degree(value, model):
         determined_model = 'MX'
     elif model.startswith('SR'):
         determined_model = 'SR'
+    elif model.startswith('XM430'):
+        determined_model = 'XM430'
     max_pos, max_deg = position_range[determined_model]
 
     return round(((max_deg * float(value)) / (max_pos - 1)) - (max_deg / 2), 2)
@@ -70,6 +73,8 @@ def degree_to_dxl(value, model):
         determined_model = 'MX'
     elif model.startswith('SR'):
         determined_model = 'SR'
+    elif model.startswith('XM430'):
+        determined_model = 'XM430'
     max_pos, max_deg = position_range[determined_model]
 
     pos = int(round((max_pos - 1) * ((max_deg / 2 + float(value)) / max_deg), 0))
@@ -163,6 +168,8 @@ dynamixelModels = {
     350: 'XL-320',  # 94 + (1<<8)
     400: 'SR-RH4D',
     401: 'SR-RH4D',  # Virtual motor
+    1020: 'XM430-W350',
+    1030: 'XM430-W210',
 }
 
 
@@ -350,7 +357,7 @@ def bool_to_dxl(value, model):
 
 
 def dxl_decode(data):
-    if len(data) not in (1, 2):
+    if len(data) not in (1, 2, 4):
         raise ValueError('try to decode incorrect data {}'.format(data))
 
     if len(data) == 1:
@@ -358,6 +365,9 @@ def dxl_decode(data):
 
     if len(data) == 2:
         return data[0] + (data[1] << 8)
+
+    if len(data) == 4:
+        return dxl_decode(data[:2])
 
 
 def dxl_decode_all(data, nb_elem):
@@ -369,7 +379,7 @@ def dxl_decode_all(data, nb_elem):
 
 
 def dxl_code(value, length):
-    if length not in (1, 2):
+    if length not in (1, 2, 4):
         raise ValueError('try to code value with an incorrect length {}'.format(length))
 
     if length == 1:
@@ -377,6 +387,9 @@ def dxl_code(value, length):
 
     if length == 2:
         return (value % 256, value >> 8)
+
+    if length == 4:
+        return (value % 256, value >> 8, 0, 0)
 
 
 def dxl_code_all(value, length, nb_elem):
