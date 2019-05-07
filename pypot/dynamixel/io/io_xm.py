@@ -35,6 +35,12 @@ controls = {
         'access': _DxlAccess.readonly,
         'dxl_to_si': conv.dxl_to_degree
     },
+    'present temperature': {
+        'address': 146,
+        'length': 1,
+        'access': _DxlAccess.readonly,
+        'dxl_to_si': conv.dxl_to_temperature
+    },
 }
 
 
