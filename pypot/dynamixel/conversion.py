@@ -170,6 +170,7 @@ dynamixelModels = {
     401: 'SR-RH4D',  # Virtual motor
     1020: 'XM430-W350',
     1030: 'XM430-W210',
+    1120: 'XM540-W270',
 }
 
 
