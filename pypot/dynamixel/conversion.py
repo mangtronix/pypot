@@ -23,6 +23,7 @@ position_range = {
     'MX': (4096, 360.0),
     'SR': (4096, 360.0),
     'XM430': (4096, 360.0),
+    'XM540': (4096, 360.0),
     '*': (1024, 300.0)
 }
 
@@ -62,6 +63,8 @@ def dxl_to_degree(value, model):
         determined_model = 'SR'
     elif model.startswith('XM430'):
         determined_model = 'XM430'
+    elif model.startswith('XM540'):
+        determined_model = 'XM540'
     max_pos, max_deg = position_range[determined_model]
 
     return round(((max_deg * float(value)) / (max_pos - 1)) - (max_deg / 2), 2)
@@ -75,6 +78,8 @@ def degree_to_dxl(value, model):
         determined_model = 'SR'
     elif model.startswith('XM430'):
         determined_model = 'XM430'
+    elif model.startswith('XM540'):
+        determined_model = 'XM540'
     max_pos, max_deg = position_range[determined_model]
 
     pos = int(round((max_pos - 1) * ((max_deg / 2 + float(value)) / max_deg), 0))

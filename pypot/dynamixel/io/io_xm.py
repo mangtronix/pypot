@@ -47,7 +47,7 @@ controls = {
 def _add_control(name,
                  address, length=2, nb_elem=1,
                  access=_DxlAccess.readwrite,
-                 models=['XM430-W350', 'XM430-W210'],
+                 models=['XM430-W350', 'XM430-W210', 'XM540-W270'],
                  dxl_to_si=lambda val, model: val,
                  si_to_dxl=lambda val, model: val,
                  getter_name=None,
