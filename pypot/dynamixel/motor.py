@@ -392,6 +392,26 @@ class DxlSRMotor(DxlMotor):
                           angle_limit)
         self.max_pos = 180
 
+class DxlXMMotor(DxlMotor):
+    """ This class represents the XM robotis motor.
+        XXX not fully implemented
+        """
+    registers = list(DxlMotor.registers)
+
+    def __init__(self, id, name=None, model='',
+                 direct=True, offset=0.0, broken=False,
+                 angle_limit=None):
+        """ This class represents the RX and MX robotis motor.
+
+            This class adds access to:
+                * PID gains (see the robotis website for details)
+
+            """
+        DxlMotor.__init__(self, id, name, model,
+                          direct, offset, broken,
+                          angle_limit)
+
+
 
 class SafeCompliance(StoppableLoopThread):
     """ This class creates a controller to active compliance only if the current motor position is included in the angle limit, else the compliance is turned off. """

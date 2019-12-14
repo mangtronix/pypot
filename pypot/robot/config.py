@@ -128,6 +128,9 @@ def motor_from_confignode(config, motor_name):
         MotorCls = pypot.dynamixel.motor.DxlAXRXMotor
     elif type.startswith('SR'):
         MotorCls = pypot.dynamixel.motor.DxlSRMotor
+    elif type.startswith('XM'):
+        MotorCls = pypot.dynamixel.motor.DxlXMMotor
+
 
     broken = 'broken' in params and params['broken']
 
@@ -179,12 +182,32 @@ def dxl_io_from_confignode(config, c_params, ids, strict):
 
     handler = pypot.dynamixel.error.BaseErrorHandler
 
-    DxlIOCls = (pypot.dynamixel.io.Dxl320IO
-                if 'protocol' in c_params and c_params['protocol'] == 2
-                else pypot.dynamixel.io.DxlIO)
+    # XXX hack
+    # Set io if explicitly set
+    if 'io' in c_params:
+        if c_params['io'] == 'DxlXM':
+            DxlIOCls = pypot.dynamixel.io.DxlXMIO
+        elif c_params['io'] == 'Dxl320':
+            DxlIOCls = pypot.dynamixel.io.Dxl320IO
+        elif c_params['io'] == 'Dxl':
+            DxlIOCls = pypot.dynamixel.io.DxlIO
+        else:
+            msg = 'Unknown io {}'.format(c_params['io'])
+            raise pypot.dynamixel.io.DxlError(msg)
+
+    else:
+        # Old behaviour, assumes protocol 2 means Dxl320
+        DxlIOCls = (pypot.dynamixel.io.Dxl320IO
+                    if 'protocol' in c_params and c_params['protocol'] == 2
+                    else pypot.dynamixel.io.DxlIO)
+
+    baudrate = 1000000
+    if 'baudrate' in c_params:
+        baudrate = c_params['baudrate']
 
     dxl_io = DxlIOCls(port=port,
                       use_sync_read=sync_read,
+                      baudrate=baudrate,
                       error_handler_cls=handler)
 
     try:
