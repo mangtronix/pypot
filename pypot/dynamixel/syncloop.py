@@ -54,7 +54,7 @@ class BaseDxlController(MetaDxlController):
             #DxlController(io, motors, 50., False, 'set', 'torque_enable'),
             #DxlController(io, motors, 1., False, 'get', 'present_position'),
 
-            TorqueDxlController(io, motors, 50.),
+            TorqueDxlController(io, motors, 10.),
         ]
 
         pid_motors = [m for m in motors
