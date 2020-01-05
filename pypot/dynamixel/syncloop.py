@@ -2,6 +2,7 @@ from ..robot.controller import MotorsController
 
 from .controller import (DxlController,
                          PosSpeedLoadDxlController,
+                         TorqueDxlController,
                          AngleLimitRegisterController)
 
 
@@ -42,11 +43,18 @@ class BaseDxlController(MetaDxlController):
     """
     def __init__(self, io, motors):
         controllers = [
-            PosSpeedLoadDxlController(io, motors, 50.),
+            # XXX PosSpeedLoadDxlController(io, motors, 50.),
 
-            AngleLimitRegisterController(io, motors, 10., False),
-            DxlController(io, motors, 1., False, 'get', 'present_voltage'),
-            DxlController(io, motors, 1., False, 'get', 'present_temperature')
+            # XXX AngleLimitRegisterController(io, motors, 10., False),
+            # XXX DxlController(io, motors, 1., False, 'get', 'present_voltage'),
+            DxlController(io, motors, 1., False, 'get', 'present_temperature'),
+
+            # XXX move to simple XM controller
+            DxlController(io, motors, 50., False, 'set', 'goal_position'),
+            #DxlController(io, motors, 50., False, 'set', 'torque_enable'),
+            #DxlController(io, motors, 1., False, 'get', 'present_position'),
+
+            TorqueDxlController(io, motors, 50.),
         ]
 
         pid_motors = [m for m in motors

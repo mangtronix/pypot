@@ -208,3 +208,43 @@ class PosSpeedLoadDxlController(DxlController):
                    m.__dict__['moving_speed'],
                    m.__dict__['torque_limit']) for m in rigid_motors)
         self.io.set_goal_position_speed_load(dict(zip(ids, values)))
+
+'''Controller that only maps the compliant attribute to torque enable'''
+class TorqueDxlController(DxlController):
+    def __init__(self, io, motors, sync_freq):
+        DxlController.__init__(self, io, motors, sync_freq,
+                               False, 'get', 'present_position') # $$$ should read this elsewhere
+
+    def setup(self):
+        # torques = self.io.is_torque_enabled(self.ids) # XXX for some reason this mostly doesn't work
+        # for m, c in zip(self.working_motors, torques):
+        #     m.compliant = not c
+
+        # XXX the read above is not working - start with compliant motors
+        for m in self.working_motors:
+            m.compliant = True
+
+        # self._old_torques = torques
+
+    def update(self):
+        self.set_torque(self.working_motors)
+
+    def set_torque(self, motors):
+        torques = [not m.compliant for m in motors]
+
+        # XXX writing mostly doens't work, so write it each update
+        # assuming 50Hz, we'll actually get to the motors soon enough...
+        self.io._set_torque_enable(dict(zip([motor.id for motor in motors], torques)))
+
+        # change_torque = {}
+        # for m, t, old_t in zip(motors, torques, self._old_torques):
+        #     if t != old_t:
+        #         change_torque[m.id] = t
+        # self._old_torques = torques
+        # if change_torque:
+        #     print("XXX change torque %s" % change_torque)
+        #     self.io._set_torque_enable(change_torque)
+
+        #     print("ids %s" % self.ids)
+        #     torques = self.io.is_torque_enabled(self.ids)
+        #     print("Actual %s" % str(torques))

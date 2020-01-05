@@ -5,6 +5,8 @@ import sys
 
 import pypot.dynamixel
 
+print("pypot.__file__ %s" % pypot.__file__)
+
 N = 1000
 
 
@@ -42,7 +44,9 @@ if __name__ == '__main__':
                         help='Select which port(s) to test')
 
     parser.add_argument('-b', '--baudrate',
-                        type=int, choices=[57600, 1000000], default=1000000,
+                        type=int, choices=[57600, 115200, 1000000],
+                        #default=1000000,
+                        default=57600,
                         help='Sets the baudrate')
 
     args = parser.parse_args()
@@ -51,7 +55,7 @@ if __name__ == '__main__':
         print('Now testing port {} with {}bds...'.format(port, args.baudrate))
 
         print('Opening connection...')
-        with pypot.dynamixel.DxlIO(port, baudrate=args.baudrate) as dxl:
+        with pypot.dynamixel.DxlXMIO(port, baudrate=args.baudrate) as dxl:
             print('Ok!')
             print('Scanning the bus...',)
             sys.stdout.flush()

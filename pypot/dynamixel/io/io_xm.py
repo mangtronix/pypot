@@ -14,6 +14,7 @@ controls = {
         'access': _DxlAccess.readonly,
         'dxl_to_si': conv.dxl_to_model
     },
+
     # RAM
     'torque_enable': {
         'address': 64,

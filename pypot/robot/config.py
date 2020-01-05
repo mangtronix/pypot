@@ -240,31 +240,33 @@ def check_motor_eprom_configuration(config, dxl_io, motor_names):
         m = config['motors'][name]
         id = m['id']
 
-        try:
-            old_limits = dxl_io.get_angle_limit((id, ))[0]
-            old_return_delay_time = dxl_io.get_return_delay_time((id, ))[0]
-        except IndexError:  # probably a broken motor so we just skip
-            continue
+        # XXX - need to implement for XM
 
-        if old_return_delay_time != 0:
-            logger.warning("Return delay time of %s changed from %s to 0",
-                           name, old_return_delay_time)
-            changed_return_delay_time[id] = 0
+        # try:
+        #     old_limits = dxl_io.get_angle_limit((id, ))[0]
+        #     old_return_delay_time = dxl_io.get_return_delay_time((id, ))[0]
+        # except IndexError:  # probably a broken motor so we just skip
+        #     continue
 
-        new_limits = m['angle_limit']
-        if 'wheel_mode' in m and m['wheel_mode']:
-            dxl_io.set_wheel_mode([m['id']])
-            time.sleep(0.5)
-        else:
-            # TODO: we probably need a better fix for this.
-            # dxl_io.set_joint_mode([m['id']])
+        # if old_return_delay_time != 0:
+        #     logger.warning("Return delay time of %s changed from %s to 0",
+        #                    name, old_return_delay_time)
+        #     changed_return_delay_time[id] = 0
 
-            d = numpy.linalg.norm(numpy.asarray(new_limits) - numpy.asarray(old_limits))
-            if d > 1:
-                logger.warning("Limits of '%s' changed from %s to %s",
-                               name, old_limits, new_limits,
-                               extra={'config': config})
-                changed_angle_limits[id] = new_limits
+        # new_limits = m['angle_limit']
+        # if 'wheel_mode' in m and m['wheel_mode']:
+        #     dxl_io.set_wheel_mode([m['id']])
+        #     time.sleep(0.5)
+        # else:
+        #     # TODO: we probably need a better fix for this.
+        #     # dxl_io.set_joint_mode([m['id']])
+
+        #     d = numpy.linalg.norm(numpy.asarray(new_limits) - numpy.asarray(old_limits))
+        #     if d > 1:
+        #         logger.warning("Limits of '%s' changed from %s to %s",
+        #                        name, old_limits, new_limits,
+        #                        extra={'config': config})
+        #         changed_angle_limits[id] = new_limits
 
     if changed_angle_limits:
         dxl_io.set_angle_limit(changed_angle_limits)
@@ -286,6 +288,8 @@ def instatiate_motors(config):
             MotorCls = pypot.dynamixel.motor.DxlMXMotor
         elif m_params['type'].startswith('SR'):
             MotorCls = pypot.dynamixel.DxlSRMotor
+        elif m_params['type'].startswith('XM'):
+            MotorCls = pypot.dynamixel.DxlMXMotor
 
         m = MotorCls(id=m_params['id'],
                      name=m_name,

@@ -111,7 +111,7 @@ def autodetect_robot():
     motor_controllers = []
 
     for port in get_available_ports():
-        for DxlIOCls in (DxlIO, Dxl320IO):
+        for DxlIOCls in (DxlIO, Dxl320IO, DxlXMIO):
             dxl_io = DxlIOCls(port)
             ids = dxl_io.scan()
 
@@ -127,11 +127,13 @@ def autodetect_robot():
                 'AX': DxlAXRXMotor,
                 'XL': DxlXL320Motor,
                 'SR': DxlSRMotor,
+                'XM': DxlMXMotor,
             }
 
             motors = [motorcls[model[:2]](id, model=model)
                       for id, model in zip(ids, models)]
 
+            # $$$ make a DxlXMController since it's so different
             c = BaseDxlController(dxl_io, motors)
             motor_controllers.append(c)
             break
