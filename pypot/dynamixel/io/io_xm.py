@@ -24,6 +24,10 @@ controls = {
         'getter_name': 'is_torque_enabled',
         'setter_name': '_set_torque_enable'
     },
+    'position p gain': {
+        'address': 84,
+        'length': 2,
+    },
     'goal position': {
         'address': 116,
         'length': 4,
